@@ -6,7 +6,7 @@ function Card(props) {
 
 	return (
 		<li className="element">
-			<img className="element__mask-group" alt="Ваша фотография места ${props.card.name}" src={props.card.link} onClick={handleClick}/>
+			<img className="element__mask-group" alt={`Ваша фотография места ${props.card.name}`} src={props.card.link} onClick={handleClick}/>
 			<div className="element__wrapper">
 				<h2 className="element__title">{props.card.name}</h2>
 				<div className="element__group">
