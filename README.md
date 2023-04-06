@@ -15,6 +15,6 @@
 * ООП
 * Сборка webpack
 * API
-
-[Сайт можно увидеть.](https://kush-mash.github.io/mesto/)
+ 
+[Сайт можно увидеть.](https://kush-mash.github.io/mesto-react/)
 
