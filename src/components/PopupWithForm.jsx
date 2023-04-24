@@ -10,11 +10,12 @@ function PopupWithForm(props) {
         <form
           className={`popup__form popup__form_modify_${props.name}`}
           name={props.name}
+          onSubmit={props.onSubmit}
         >
           {props.children}
-        	<button className="popup__button" type="submit">
-        		{props.buttonText}
-        	</button>
+          <button className="popup__button" type="submit">
+            {props.buttonText}
+          </button>
         </form>
         <button
           className="popup__close-button"

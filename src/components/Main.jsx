@@ -1,46 +1,30 @@
-import React, { useEffect, useState } from "react";
-import { api } from "../utils/Api.js";
+import React, { useEffect, useState, useContext } from "react";
+import CurrentUserContext from "../contexts/CurrentUserContext";
 import Card from "./Card.jsx";
 
 function Main(props) {
-  const [userName, setUserName] = useState("");
-  const [userDescription, setUserDescription] = useState("");
-  const [userAvatar, setUserAvatar] = useState("");
-  const [cards, setCards] = useState([]);
-
-  useEffect(() => {
-    api
-      .getCurrentUser()
-      .then((data) => {
-        setUserName(data.name);
-        setUserDescription(data.about);
-        setUserAvatar(data.avatar);
-      })
-      .catch((err) => console.log(err));
-
-    api
-      .getServerCards()
-      .then((data) => {
-        setCards(data);
-      })
-      .catch((err) => console.log(err));
-  }, []);
+  // Подписываемся на контекст
+  const currentUser = useContext(CurrentUserContext);
 
   return (
     <main className="content">
       <section className="profile">
         <div className="profile__avatar-box">
-          <img className="profile__avatar" alt="Аватар" src={userAvatar} />
+          <img
+            className="profile__avatar"
+            alt="Аватар"
+            src={currentUser.avatar}
+          />
           <button
             className="profile__avatar-edit-button"
             type="button"
             title="Загрузить новый аватар"
             onClick={props.onEditAvatar}
-          ></button>
+          />
         </div>
         <div className="profile__info">
-          <h1 className="profile__title">{userName}</h1>
-          <p className="profile__subtitle">{userDescription}</p>
+          <h1 className="profile__title">{currentUser.name}</h1>
+          <p className="profile__subtitle">{currentUser.description}</p>
           <button
             className="profile__edit-button"
             type="button"
@@ -57,8 +41,14 @@ function Main(props) {
       </section>
       <section className="elements">
         <ul className="elements__box">
-          {cards.map((card) => (
-            <Card card={card} key={card._id} onCardClick={props.onCardClick} />
+          {props.cards.map((card) => (
+            <Card
+              card={card}
+              key={card._id}
+              onCardClick={props.onCardClick}
+              onCardLike={props.onCardLike}
+              onCardDelete={props.onCardDelete}
+            />
           ))}
         </ul>
       </section>
