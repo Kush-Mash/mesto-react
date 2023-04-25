@@ -24,7 +24,7 @@ function Main(props) {
         </div>
         <div className="profile__info">
           <h1 className="profile__title">{currentUser.name}</h1>
-          <p className="profile__subtitle">{currentUser.description}</p>
+          <p className="profile__subtitle">{currentUser.about}</p>
           <button
             className="profile__edit-button"
             type="button"

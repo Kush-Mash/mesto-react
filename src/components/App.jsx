@@ -5,7 +5,6 @@ import Header from "./Header.jsx";
 import Main from "./Main.jsx";
 import Footer from "./Footer.jsx";
 import ImagePopup from "./ImagePopup.jsx";
-import PopupWithForm from "./PopupWithForm.jsx";
 import EditProfilePopup from "./EditProfilePopup.jsx";
 import EditAvatarPopup from "./EditAvatarPopup.jsx";
 import AddPlacePopup from "./AddPlacePopup.jsx";
@@ -16,6 +15,7 @@ function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isConfirmationPopupOpen, setIsConfirmationPopupOpen] = useState(false);
+  const [removedCardId, setRemovedCardId] = useState("");
   const [selectedCard, setSelectedCard] = useState({});
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
@@ -41,6 +41,11 @@ function App() {
     setIsAddPlacePopupOpen(!isAddPlacePopupOpen);
   }
 
+  function handleTrashClick(card) {
+    setIsConfirmationPopupOpen(!isConfirmationPopupOpen);
+    setRemovedCardId(card);
+  }
+
   function handleCardClick(card) {
     setSelectedCard(card);
   }
@@ -49,14 +54,14 @@ function App() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
-	setIsConfirmationPopupOpen(false);
+    setIsConfirmationPopupOpen(false);
     setSelectedCard({});
   }
 
   function handleCardLike(card) {
     // Снова проверяем, есть ли уже лайк на этой карточке
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
-	
+
     // Отправляем запрос в API и получаем обновлённые данные карточки
     api.changeLikeCardStatus(card._id, !isLiked).then((newCard) => {
       setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
@@ -65,19 +70,20 @@ function App() {
 
   function handleCardDelete(card) {
     api
-      .deleteCard(card._id)
+      .deleteCard(card)
       .then(() => {
         // обновить стейт cards с помощью метода filter: создать копию массива, исключив из него удалённую карточку
-        setCards((cards) => cards.filter((i) => i._id !== card._id));
+        setCards((cards) => cards.filter((i) => i._id !== card));
+        closeAllPopups();
       })
       .catch((err) => {
         console.log(err);
       });
   }
 
-  function handleUpdateUser(items) {
+  function handleUpdateUser(newUserInfo) {
     api
-      .updateUserInfo(items)
+      .updateUserInfo(newUserInfo)
       .then((user) => {
         setCurrentUser(user);
         closeAllPopups();
@@ -122,7 +128,7 @@ function App() {
           cards={cards}
           onCardClick={handleCardClick}
           onCardLike={handleCardLike}
-          onCardDelete={handleCardDelete}
+          onCardDelete={handleTrashClick}
         />
         <Footer />
 
@@ -148,6 +154,7 @@ function App() {
           isOpen={isConfirmationPopupOpen}
           onClose={closeAllPopups}
           onSubmit={handleCardDelete}
+          card={removedCardId}
         />
 
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
