@@ -63,16 +63,24 @@ function App() {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
 
     // Отправляем запрос в API и получаем обновлённые данные карточки
-    api.changeLikeCardStatus(card._id, !isLiked).then((newCard) => {
-      setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
-    });
+    api
+      .changeLikeCardStatus(card._id, !isLiked)
+      .then((newCard) => {
+        setCards((state) =>
+          state.map((c) => (c._id === card._id ? newCard : c))
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   function handleCardDelete(card) {
     api
       .deleteCard(card)
       .then(() => {
-        // обновить стейт cards с помощью метода filter: создать копию массива, исключив из него удалённую карточку
+        // обновить стейт cards с помощью метода filter:
+        // создать копию массива, исключив из него удалённую карточку
         setCards((cards) => cards.filter((i) => i._id !== card));
         closeAllPopups();
       })
